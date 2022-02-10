@@ -12,6 +12,7 @@
  *
  */
 
+let font
 let dialogBox
 let finishedTextFrame
 
@@ -19,6 +20,7 @@ let frameTop, frameBottom
 
 function preload() {
     // finishedTextFrame = loadImage('data/textFrame.png')
+    font = loadFont("data/consola.ttf")
     frameTop = loadImage('data/frameTop.png')
     frameBottom = loadImage('data/frameBottom.png')
 }
@@ -27,25 +29,56 @@ function setup() {
     createCanvas(1280, 720)
     colorMode(HSB, 360, 100, 100, 100)
     background(234, 34, 24)
-    dialogBox = new DialogBox()
+
+    textFont(font, 14)
+    dialogBox = new DialogBox(frameTop, frameBottom)
     // dialogBox.saveRenderedTextBoxImg()
     // dialogBox.generateFrameHalves()
-
-
 }
 
-/* scale factor, a percentage from 0-100 */
-let s = 0
 
 function draw() {
-
+    openAnimationDemo()
 }
 
 
 /**
+ * animates a dialog frame opening and expanding from the vertical center.
+ * mouseX controls the rate of opening. includes helpful debug text
+ */
+function openAnimationDemo() {
+    background(234, 34, 24)
+
+    const Y_CENTER = 200
+    const X_OFFSET = 100
+
+    let scale = map(mouseX, 0, width, 0, 100)
+    scale = constrain(scale, 0.01, 100)
+
+    let h = frameTop.height * scale/100.0
+    let w = frameTop.width
+    let transparency = constrain(scale, 30, 100)
+    tint(0, 0, 100, transparency) /* gradually increase opacity */
+
+    /* keep frameTop's bottom edge at a constant height */
+    image(frameTop, X_OFFSET, Y_CENTER-h, w, h)
+    image(frameBottom, X_OFFSET, Y_CENTER, w, h)
+
+
+    /** debug corner 🍁 */
+    const DEBUG_Y_OFFSET = height - 50
+    const LINE_HEIGHT = textAscent() + textDescent() + 2 /* 2 = lineSpacing */
+    fill(0, 0, 100, 100) /* white */
+    text(`scaleF: ${scale.toFixed(2)}`, 50, DEBUG_Y_OFFSET)
+    text(`height: ${h.toFixed(2)}`, 50, DEBUG_Y_OFFSET - LINE_HEIGHT)
+    text(`transparency: ${transparency.toFixed(2)}`, 50,
+        DEBUG_Y_OFFSET - 2*LINE_HEIGHT)
+}
+
+/**
  * displays frames from dialogBox.generateFrameHalves for debugging
  */
-function debugFrames() {
+function displayFrameHalves() {
     dialogBox.render2DTextBox(this)
 
     /**

@@ -1,5 +1,5 @@
 class DialogBox {
-    constructor(passages, highlightIndices, msPerPassage) {
+    constructor(top, bottom) {
         this.LEFT_MARGIN = 80
         this.RIGHT_MARGIN = this.LEFT_MARGIN
         this.BOTTOM_MARGIN = 20
@@ -8,18 +8,32 @@ class DialogBox {
 
         this.phase = 0 /* controls fading for triangle via alpha channel */
         this.radius = 6 /* "radius" of the next-passage triangle */
+        this.heightScale = 1 /* controls 'open' and 'close' animations */
 
-
+        this.frameTop = top
+        this.frameBottom = bottom
     }
 
-    renderTriangle(cam) {
 
+    /**
+     *
+     */
+    openAnimation(n) {
+        let top = this.frameTop
+
+        // top.resize(top.width, top.height * n/100.0)
+        image(frameTop, 100, 100)
+    }
+
+
+    /**
+     * animate a breathing triangle
+     */
+    renderTriangle() {
         /*  render fading dialogbox triangle if:
          *      we are at the end of the passage, i.e.
          *          this.index === this.passage.length-1?
          *  TODO check if this works
-         *
-         *
          */
         push()
         const PADDING = 40 /* space between center of triangle and box side */
