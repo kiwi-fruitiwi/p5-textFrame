@@ -1,15 +1,15 @@
 class DialogBox {
     constructor(passages, highlightIndices, msPerPassage) {
-
         this.LEFT_MARGIN = 80
         this.RIGHT_MARGIN = this.LEFT_MARGIN
         this.BOTTOM_MARGIN = 20
         this.HEIGHT = 224
-
         this.boxWidth = width - this.LEFT_MARGIN - this.RIGHT_MARGIN
 
         this.phase = 0 /* controls fading for triangle via alpha channel */
         this.radius = 6 /* "radius" of the next-passage triangle */
+
+
     }
 
     renderTriangle(cam) {
@@ -58,6 +58,49 @@ class DialogBox {
         // doing manually. now it's automatic because we pass in pg!
         this.render2DTextBox(pg)
         pg.save()
+    }
+
+
+    /**
+     * saves the top and bottom halves of the frame to an image
+     */
+    generateFrameHalves() {
+        const pg = createGraphics(width, height)
+        pg.colorMode(HSB, 360, 100, 100, 100)
+        dialogBox.render2DTextBox(pg)
+
+        /**
+         *  create a cropped version of the 1280x720 textFrame. this is the
+         *  frame itself without the rest of the transparent background. Use
+         *  image.get(x, y, w, h). we need STROKE_WIDTH_ADJUST because the
+         *  stroke of the original frame exceeds the coordinates roughly by the
+         *  strokeWidth/2
+         *
+         *  https://p5js.org/reference/#/p5.Image/get
+         *  syntax: get(x, y, w, h)
+         */
+        const STROKE_WIDTH_ADJUST = 3;
+        const x = dialogBox.LEFT_MARGIN-STROKE_WIDTH_ADJUST
+        const y = height
+            - dialogBox.BOTTOM_MARGIN
+            - dialogBox.HEIGHT-STROKE_WIDTH_ADJUST
+        const w = dialogBox.boxWidth+STROKE_WIDTH_ADJUST*2
+        const h = dialogBox.HEIGHT+STROKE_WIDTH_ADJUST*2
+
+        // we can use either get() which uses the canvas, or finishedTextFrame.get()
+        let frameCrop = pg.get(x, y, w, h)
+
+
+        /** display top and bottom halves of our frame separately */
+
+        /* frame top half */
+        const HALF_HEIGHT = h-dialogBox.HEIGHT/2 + STROKE_WIDTH_ADJUST
+        const frameTop = frameCrop.get(0, 0, w, HALF_HEIGHT)
+        frameTop.save()
+
+        /* frame bottom half */
+        const frameBottom = frameCrop.get(0, HALF_HEIGHT, w, HALF_HEIGHT)
+        frameBottom.save()
     }
 
 

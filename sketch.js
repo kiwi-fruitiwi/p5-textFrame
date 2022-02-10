@@ -15,8 +15,12 @@
 let dialogBox
 let finishedTextFrame
 
+let frameTop, frameBottom
+
 function preload() {
     // finishedTextFrame = loadImage('data/textFrame.png')
+    frameTop = loadImage('data/frameTop.png')
+    frameBottom = loadImage('data/frameBottom.png')
 }
 
 function setup() {
@@ -25,9 +29,23 @@ function setup() {
     background(234, 34, 24)
     dialogBox = new DialogBox()
     // dialogBox.saveRenderedTextBoxImg()
+    // dialogBox.generateFrameHalves()
+
+
 }
 
+/* scale factor, a percentage from 0-100 */
+let s = 0
+
 function draw() {
+
+}
+
+
+/**
+ * displays frames from dialogBox.generateFrameHalves for debugging
+ */
+function debugFrames() {
     dialogBox.render2DTextBox(this)
 
     /**
