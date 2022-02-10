@@ -16,21 +16,18 @@ let dialogBox
 let finishedTextFrame
 
 function preload() {
-    finishedTextFrame = loadImage('data/textFrame.png')
+    // finishedTextFrame = loadImage('data/textFrame.png')
 }
 
 function setup() {
     createCanvas(1280, 720)
     colorMode(HSB, 360, 100, 100, 100)
-    noCursor()
-
+    background(234, 34, 24)
     dialogBox = new DialogBox()
     // dialogBox.saveRenderedTextBoxImg()
 }
 
 function draw() {
-    background(234, 34, 24)
-
     dialogBox.render2DTextBox(this)
 
     /**
@@ -51,19 +48,24 @@ function draw() {
     const w = dialogBox.boxWidth+STROKE_WIDTH_ADJUST*2
     const h = dialogBox.HEIGHT+STROKE_WIDTH_ADJUST*2
 
-    let frameCrop = finishedTextFrame.get(x, y, w, h)
+    // we can use either get() which uses the canvas, or finishedTextFrame.get()
+    let frameCrop = get(x, y, w, h)
 
-    /* top half of our frame */
+
+
+    /** display top and bottom halves of our frame separately */
+
+    /* frame top half */
     const HALF_HEIGHT = h-dialogBox.HEIGHT/2 + STROKE_WIDTH_ADJUST
     const frameTop = frameCrop.get(0, 0, w, HALF_HEIGHT)
-
-    /* bottom half of our frame */
-    const frameBottom = frameCrop.get(0, HALF_HEIGHT, w, HALF_HEIGHT)
-
     image(frameTop, x, 50)
+
+    /* frame bottom half */
+    const frameBottom = frameCrop.get(0, HALF_HEIGHT, w, HALF_HEIGHT)
     image(frameBottom, x, 250)
 
-    fill(90, 100, 100, 50)
+    /** add debug dots on top left and bottom right corners */
+    fill(90, 100, 100, 50) /* green */
     noStroke()
     circle(x, y, 4)
     circle(x+w, y+h, 4)

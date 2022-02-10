@@ -45,9 +45,10 @@ class DialogBox {
     }
 
 
-    /*  saves the output of render2DTextBox to a PGraphics object with
-        transparency. we can save this and use image() to display later!
-        this gets around several p5.js bugs in 3D
+    /**
+     *  saves the output of render2DTextBox to a PGraphics object with
+     *  transparency. we can save this and use image() to display later!
+     *  this gets around several p5.js bugs in 3D
      */
     saveRenderedTextBoxImg() {
         const pg = createGraphics(width, height)
@@ -60,8 +61,9 @@ class DialogBox {
     }
 
 
-    /*  renders the transparent dialog box. modify this function for use in
-        saveRenderedImg. pg is "this" passed from sketch.js
+    /**
+     * renders the transparent dialog box. modify this function for use in
+     * saveRenderedImg. pg is "this" passed from sketch.js
      */
     render2DTextBox(pg) {
         // these are the coordinates for the top left corner of our target box
@@ -70,6 +72,9 @@ class DialogBox {
         const r = 7 // side length of the corner triangle
         const s = 4 // scaling factor of r to extend brackets in corners
 
+        /*  this approach is cumbersome. better to create quadrant 2 and
+            then translate + rotate to make the remaining three quadrants
+         */
         const TLC = new p5.Vector(x, y) // top left corner
         const TRC = new p5.Vector(x+this.boxWidth, y) // top right corner
         const BRC = new p5.Vector(x+this.boxWidth, y+this.HEIGHT) // bottom r.
