@@ -8,7 +8,8 @@
  * at how to implement the scrolling text for each passage.
  *
  * what am I aiming for?
- *
+ *  ☒ basic opening animation demo
+ *  ☐ full animation including flashing white background + expanding line
  *
  */
 
@@ -52,12 +53,19 @@ function openAnimationDemo() {
     const Y_CENTER = 200
     const X_OFFSET = 100
 
-    let scale = map(mouseX, 0, width, 0, 100)
-    scale = constrain(scale, 0.01, 100)
+    /* use this value to scale height of textFrame */
+    let mouseXZeroTo100 = map(mouseX, 0, width, 0, 100)
 
-    let h = frameTop.height * scale/100.0
+    /* can try scale-30 to shift range to 30-130 */
+    /* constrain to handle 0 height issue */
+    mouseXZeroTo100 = constrain(mouseXZeroTo100, 0.01, 100)
+
+
+    let mouseX30To100 = map(mouseXZeroTo100, 0, 100, 30, 100)
+
+    let h = frameTop.height * mouseX30To100/100.0
     let w = frameTop.width
-    let transparency = constrain(scale, 30, 100)
+    let transparency = constrain(mouseXZeroTo100, 30, 100)
     tint(0, 0, 100, transparency) /* gradually increase opacity */
 
     /* keep frameTop's bottom edge at a constant height */
@@ -66,10 +74,10 @@ function openAnimationDemo() {
 
 
     /** debug corner 🍁 */
-    const DEBUG_Y_OFFSET = height - 50
+    const DEBUG_Y_OFFSET = height - 50 /* floor of debug corner */
     const LINE_HEIGHT = textAscent() + textDescent() + 2 /* 2 = lineSpacing */
     fill(0, 0, 100, 100) /* white */
-    text(`scaleF: ${scale.toFixed(2)}`, 50, DEBUG_Y_OFFSET)
+    text(`scaleF: ${mouseXZeroTo100.toFixed(2)}`, 50, DEBUG_Y_OFFSET)
     text(`height: ${h.toFixed(2)}`, 50, DEBUG_Y_OFFSET - LINE_HEIGHT)
     text(`transparency: ${transparency.toFixed(2)}`, 50,
         DEBUG_Y_OFFSET - 2*LINE_HEIGHT)
