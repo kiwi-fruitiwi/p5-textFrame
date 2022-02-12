@@ -53,7 +53,7 @@ function openAnimationDemo() {
     background(234, 34, 24)
 
     const Y_CENTER = 200
-    const X_OFFSET = 100
+    const LEFT_MARGIN = 80
 
     /* maps mouseX from [0, width] to [0.01, 100]; 0.01 avoids boundary case */
     let mouseX0To100 = map(mouseX, 0, width, 0.01, 100)
@@ -69,11 +69,21 @@ function openAnimationDemo() {
      *      find center point (width/2, Y_CENTER)
      *          line from width/2 +/- σ
      *  💩 match width of line to textFrame. center properly
+     *      how do we fix the width? determine margins and centering
+     *          dialogBox.js shows LEFT_MARGIN to be 80
+     *          ☒ thus our X_OFFSET should be 80 instead of 100
+     *      how do we restrict our expanding white line?
+     *          we expand from the center using a percentage of width
+     *          ☒ change to percentage of width - 80 or 80*2?
+     *
      */
     let σ = map(mouseX0To100, 0.01, 30, 0, 50, true)
     strokeWeight(3)
     stroke(0, 0, 100, 100)
-    let sideLength = σ * width/100
+
+    /* our side length is a percentage of the width minus the margins; this
+     spans from 0 to half the width of the textFrame */
+    let sideLength = (σ/100) * (width-2*LEFT_MARGIN)
 
     if (mouseX0To100 < 30) /* only display if textFrame hasn't appeared at 30 */
         line(width/2-sideLength, Y_CENTER, width/2+sideLength, Y_CENTER)
@@ -84,8 +94,8 @@ function openAnimationDemo() {
     tint(0, 0, 100, transparency) /* gradually increase opacity ∈[30, 100] */
 
     /* keep frameTop's bottom edge at a constant height */
-    image(frameTop, X_OFFSET, Y_CENTER-h, w, h)
-    image(frameBottom, X_OFFSET, Y_CENTER, w, h)
+    image(frameTop, LEFT_MARGIN, Y_CENTER-h, w, h)
+    image(frameBottom, LEFT_MARGIN, Y_CENTER, w, h)
 
 
     /** debug corner 🍁 TODO: make a function for this. dictionary! */
