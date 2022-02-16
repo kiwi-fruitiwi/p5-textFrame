@@ -95,8 +95,10 @@ function openAnimationDemo() {
      spans from 0 to half the width of the textFrame */
     let sideLength = (σ/100) * (width-2*LEFT_MARGIN)
 
-    if (mouseX0To100 < 32) /* only display if textFrame hasn't appeared at 30 */
-        line(width/2-sideLength, Y_CENTER, width/2+sideLength, Y_CENTER)
+    if (mouseX0To100 > 0.1) /* don't display a dot before we start growing */
+        /* only display if textFrame hasn't appeared yet */
+        if (mouseX0To100 < 32)
+            line(width/2-sideLength, Y_CENTER, width/2+sideLength, Y_CENTER)
 
     let h = frameTop.height * mouseX30To100/100.0
     let w = frameTop.width
@@ -121,9 +123,9 @@ function openAnimationDemo() {
             LEFT_MARGIN+L_MARGIN_PADDING, Y_CENTER,
             w-L_MARGIN_PADDING*2, h-15,
             8)
-    } else if(mouseX0To100 >= 80) {
+    }
+    if(mouseX0To100 >= 80) {
         tint(0, 0, 100, 100) /* full opacity near end of mouseX range */
-
     } else {
         /* gradually increase opacity ∈[30, 100] */
         tint(0, 0, 100, transparency)
