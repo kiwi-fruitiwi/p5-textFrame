@@ -41,7 +41,27 @@ function setup() {
 
 
 function draw() {
-    dialogBox.openAnimation(map(mouseX, 0, width, 0.01, 100))
+    background(234, 34, 24)
+    // dialogBox.openAnimation(map(mouseX, 0, width, 0.01, 100))
+
+    /**
+     * open in ¼ of a second using frameCount: stay at 100 after
+     * disappearing is also okay if we replace it immediately with the real
+     * textFrame renderer.
+     *
+     * @param START start time: milliseconds after sketch load
+     * @param END end time: milliseconds after sketch load
+     */
+    const START = 1000
+    const END = 1200
+
+    if(millis() > START && millis() < END) {
+        let slider = map(millis() - START, 0, END-START, 0.01, 100)
+        dialogBox.openAnimation(slider)
+    } else if(millis() >= END) {
+        dialogBox.openAnimation(100)
+    }
+
 }
 
 
