@@ -11,8 +11,9 @@
  *
  * what am I aiming for?
  *  ☒ basic opening animation demo
- *  ☐ full animation including flashing white background + expanding line
- *
+ *  ☒ full animation including flashing white background + expanding line
+ *  ☒ refactor
+ *  ☐ transfer opening animation code to p5-dialogSystemManualWidth → p5-mNS
  */
 
 let font
@@ -42,6 +43,15 @@ function setup() {
 
 function draw() {
     background(234, 34, 24)
+    /** use this to test the opening animation based on mouseX */
+    // dialogBox.openAnimation(map(mouseX, 0, width, 0.01, 100))
+
+    openDialog()
+}
+
+
+function openDialog() {
+    background(234, 34, 24)
     // dialogBox.openAnimation(map(mouseX, 0, width, 0.01, 100))
 
     /**
@@ -61,8 +71,8 @@ function draw() {
     } else if(millis() >= END) {
         dialogBox.openAnimation(100)
     }
-
 }
+
 
 
 /**

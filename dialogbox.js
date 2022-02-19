@@ -20,93 +20,92 @@ class DialogBox {
      * mouseX controls the rate of opening. includes helpful debug text
      *
      * @param slider this value should be between 0.01 to 100, where 0.01 is
-     * 'fully closed' ande 100 is 'fully open'
+     * 'fully closed' and 100 is 'fully open'
+     *
+     * this function used to use mouseX as our slider variable, and mapped
+     * mouseX from [0, width] to [0.01, 100]; 0.01 avoids boundary case
      */
-    openAnimation(slider /* increasing variable we base opening speed on */) {
+    openAnimation(slider0to100 /* increasing var we base opening speed on */) {
         background(234, 34, 24)
 
         const Y_CENTER = 200
-        const LEFT_MARGIN = 80
 
-        /* maps mouseX from [0, width] to [0.01, 100]; 0.01 avoids boundary case */
-        let slider0to100 = slider
-
+        /*  debugging center line
+            stroke(0, 0, 100, 100)
+            strokeWeight(1)
+            line(0, Y_CENTER, width, Y_CENTER)
+         */
 
         /* again mapped to 0.01 instead of 0 to avoid garbage negative image */
         /* note the use of constrain boolean at end of map */
         let slider30to100 = map(slider0to100, 30, 100, 0.01, 100, true)
 
-        /**
-         *  from 0-30, draw a growing white horizontal line
+        /* pseudocode
+         *  from 0.01-30, draw a growing white horizontal line
          *      map from [0,30] to [0,50] side length percentage σ
          *      side length will be (σ/100) * width ← better as [0, 0.5]
          *      find center point (width/2, Y_CENTER)
          *          line from width/2 +/- σ
-         *  💩 match width of line to textFrame. center properly
+         *  match width of line to textFrame. center properly
          *      how do we fix the width? determine margins and centering
          *          dialogBox.js shows LEFT_MARGIN to be 80
          *          ☒ thus our X_OFFSET should be 80 instead of 100
          *      how do we restrict our expanding white line?
          *          we expand from the center using a percentage of width
          *          ☒ change to percentage of width - 80 or 80*2?
-         *  🔧 reduce transparency of white line as it grows to 30
-         *
-         *
          */
         let σ = map(slider0to100, 0.01, 30, 0, 50, true)
         strokeWeight(2)
-
-        /* have the opacity of the white line decrease from [0, 30] */
-        // let lineAlpha = ?
         stroke(0, 0, 100, 100)
 
         /* our side length is a percentage of the width minus the margins; this
          spans from 0 to half the width of the textFrame */
-        let sideLength = (σ/100) * (width-2*LEFT_MARGIN)
+        let sideLength = (σ/100) * (width-2*this.LEFT_MARGIN)
 
-        if (slider0to100 > 0.1) /* don't display a dot before we start growing */
+        /* don't display a dot before we start growing */
+        if (slider0to100 > 0.1)
             /* only display if textFrame hasn't appeared yet */
             if (slider0to100 < 32)
                 line(width/2-sideLength, Y_CENTER, width/2+sideLength, Y_CENTER)
 
+        /** second part of animation: growing frameTop and frameBottom */
         let h = frameTop.height * slider30to100/100.0
         let w = frameTop.width
         let transparency = constrain(slider0to100, 5, 30)
 
+        /** when the textBox is 80%+ fully expanded, "flash white" effect */
         if(slider0to100 >= 80 && slider0to100 <= 99) {
             /*  draw a white rectangle with the correct width and height
-                ☐ start with two rects with the same coordinates as fTop + fBottom
-
+                    start with two rects with the same (x,y) as fTop + fBottom
              */
             const L_MARGIN_PADDING = 4
-            const H_PADDING_TOP = 5
-            const H_PADDING_BOTTOM = 12
             fill(0, 0, 100, 100)
+            noStroke()
+            /*  TODO this should technically be one correctly-sized rect ;p
+             *      also pretty sure the math is wrong here, but output is okay
+             */
 
-            /* TODO this should technically be one correctly-sized rect ;p */
-            rect( /* top half */
-                LEFT_MARGIN+L_MARGIN_PADDING, Y_CENTER-h+5,
-                w-L_MARGIN_PADDING*2, h+5,
-                8)
             rect(
-                LEFT_MARGIN+L_MARGIN_PADDING, Y_CENTER,
-                w-L_MARGIN_PADDING*2, h-15,
-                8)
+                this.LEFT_MARGIN+L_MARGIN_PADDING,
+                Y_CENTER-h,
+                w-L_MARGIN_PADDING*2,
+                (h-6)*2, // actually unsure why we need this 6. math must be off
+                8 // rounded borders
+            )
         }
+
         if(slider0to100 >= 80) {
-            tint(0, 0, 100, 100) /* full opacity near end of mouseX range */
+            tint(0, 0, 100, 100) /* full opacity near end of slider range */
         } else {
             /* gradually increase opacity ∈[30, 100] */
             tint(0, 0, 100, transparency)
         }
 
-
-        /* if mouseX0To100 ∈ [80. 90] maybe tint the entire thing white? */
-
-
-        /* keep frameTop's bottom edge at a constant height */
-        image(frameTop, LEFT_MARGIN, Y_CENTER-h, w, h)
-        image(frameBottom, LEFT_MARGIN, Y_CENTER, w, h)
+        /** display the frameTop and frameBottom
+         *  keep frameTop's bottom edge at a constant height
+         */
+        image(frameTop, this.LEFT_MARGIN, Y_CENTER-h, w, h)
+        image(frameBottom, this.LEFT_MARGIN, Y_CENTER, w, h)
 
 
         /** debug corner 🍁 TODO: make a function for this. dictionary! */
